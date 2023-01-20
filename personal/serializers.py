@@ -13,3 +13,10 @@ class DepartmentSerializers(serializers.ModelSerializer):
     def get_personal_count(self, obj):
         return obj.personals.count()
     
+    
+    
+class PersonalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Personal
+        fields = '__all__'
+        
