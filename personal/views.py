@@ -4,7 +4,7 @@ from rest_framework import generics,status
 from .models import Department,Personal
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .permissions import IsStafforReadOnly
+from .permissions import IsStafforReadOnly,IsOwnerAndStaffOrReadOnly
 
 # Create your views here.
 
@@ -47,3 +47,10 @@ class PersonalListCreateView(generics.ListCreateAPIView):
         person.create_user = self.request.user
         person.save()
         return person
+    
+    
+    
+class PersonalGetUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Personal.objects.all()
+    serializer_class=PersonalSerializer
+    permission_classes = [IsAuthenticated,IsOwnerAndStaffOrReadOnly]
