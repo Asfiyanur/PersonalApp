@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import DepartmentSerializers,PersonalSerializer
+from .serializers import DepartmentSerializers,PersonalSerializer,DepartmentPersonalSerializer
 from rest_framework import generics,status
 from .models import Department,Personal
 from rest_framework.permissions import IsAuthenticated
@@ -73,3 +73,18 @@ class PersonalGetUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
                 "message": "You are not authorized to perform this operation"
             }
             return Response(data, status=status.HTTP_401_UNAUTHORIZED)
+        
+        
+class DepartmentPersonalView(generics.ListAPIView):
+    serializer_class = DepartmentPersonalSerializer
+    queryset = Department.objects.all()
+    
+    def get_queryset(self):
+        name = self.kwargs["department"]
+        return Department.objects.filter(name__iexact=name)
+    
+    
+class Custom(generics.RetrieveAPIView):
+    serializer_class = DepartmentPersonalSerializer
+    queryset = Department.objects.all()
+    lookup_field= "name"
