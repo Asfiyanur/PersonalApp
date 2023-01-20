@@ -24,7 +24,7 @@ GENDER = (
     ("Prefer Not Say", "N"),
 )  
 
-class Personnel(models.Model):
+class Personal(models.Model):
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name='personals')
     create_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     first_name = models.CharField(max_length=50)
