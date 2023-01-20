@@ -24,10 +24,11 @@ class PersonalSerializer(serializers.ModelSerializer):
         model = Personal
         fields = '__all__'
 
-    def create(self, validated_data):
-        validated_data["create_user_id"] = self.context['request'].user.id
-        instance = Personal.objects.create(**validated_data)
-        return instance
+    #! burade user id create edilirken id ekleniyordu bunu view de 47.satırda yapabiliriz orasıda create old içindir
+    # def create(self, validated_data):
+    #     validated_data["create_user_id"] = self.context['request'].user.id
+    #     instance = Personal.objects.create(**validated_data)
+    #     return instance
     
     def get_days_since_joined(self, obj):
         return (now() - obj.start_date).days
