@@ -52,12 +52,22 @@ class PersonalGetUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     # permission_classes = [IsAuthenticated,IsOwnerAndStaffOrReadOnly]
     permission_classes = [IsAuthenticated]
 
-# ! IsOwner permssion ı kapatsak bile put u override ederek aynı contional i elde ebiliriz
+# ! IsOwner permssion ı kapatsak bile put u override ederek aynı contional i elde ebiliriz / delete de sadce superuser a verebililriz bu şekilde
 
     def put(self, request, *args, **kwargs):
         instance = self.get_object()
         if self.request.user.is_staff and (instance.create_user == self.request.user):
             return self.update(request, *args, **kwargs)
+        else:
+            data = {
+                "message": "You are not authorized to perform this operation"
+            }
+            return Response(data, status=status.HTTP_401_UNAUTHORIZED)
+        
+        
+    def delete(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return self.destroy(request, *args, **kwargs)
         else:
             data = {
                 "message": "You are not authorized to perform this operation"
