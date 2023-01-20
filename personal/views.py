@@ -14,8 +14,6 @@ class DepartmentView(generics.ListCreateAPIView):
     queryset = Department.objects.all()
     permission_classes = [IsAuthenticated,IsStafforReadOnly]
     
-    
-    
 class PersonalListCreateView(generics.ListCreateAPIView):
     serializer_class = PersonalSerializer
     queryset = Personal.objects.all()
@@ -48,9 +46,20 @@ class PersonalListCreateView(generics.ListCreateAPIView):
         person.save()
         return person
     
-    
-    
 class PersonalGetUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     queryset = Personal.objects.all()
     serializer_class=PersonalSerializer
-    permission_classes = [IsAuthenticated,IsOwnerAndStaffOrReadOnly]
+    # permission_classes = [IsAuthenticated,IsOwnerAndStaffOrReadOnly]
+    permission_classes = [IsAuthenticated]
+
+# ! IsOwner permssion ı kapatsak bile put u override ederek aynı contional i elde ebiliriz
+
+    def put(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if self.request.user.is_staff and (instance.create_user == self.request.user):
+            return self.update(request, *args, **kwargs)
+        else:
+            data = {
+                "message": "You are not authorized to perform this operation"
+            }
+            return Response(data, status=status.HTTP_401_UNAUTHORIZED)
